@@ -11,7 +11,7 @@ It was designed to let you write the smallest possible programs while still havi
 
 * <mark>2.</mark> Download Python **(You can use every Python versions but, Portable version recommended)**.
 
-* <mark>3.</mark> Then add *python* in Vulpin Folder.
+* <mark>3.</mark> If you downloaded **Python Portable** version, add *python* folder to Vulpin Folder.
 
 * <mark>4.</mark>  Then sync Vulpin in system variables.
 
