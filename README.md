@@ -1,7 +1,453 @@
 # Vulpin
 Vulpin is high-level programming language which is wroten with **Python**.
-Vulpin focused on *App* Size, and most of thing's like Speed.
+Vulpin focused on *App* Size, and most of thing's like Speed, modules, support's python modules.
 
 # Installition
 
-Download Python **(Portable version)**
+
+* <mark>1.</mark> Download Vulpin from **github**.
+
+* <mark>2.</mark> Download Python **(Portable version)**.
+
+* <mark>3.</mark> Then add *python* in Vulpin Folder.
+
+* <mark>4.</mark>  Then sync Vulpin in system variables.
+
+# Windows
+To do that, you have to open system variables:
+* Click ```Win+R``` on your system then write and enter:
+```
+rundll32 sysdm.cpl,EditEnvironmentVariables
+```
+then go to path in the system variable box. after that add vulpin from dictionary.
+
+# linux
+add this code in at the first line of ```vulpin.py```:
+```python
+#!/usr/bin/env python3
+```
+Then make it excetuble:
+```
+mv vulpin.py vulpinchmod +x vulpin
+```
+
+then move it to path like this:
+```
+mkdir -p ~/.local/bin/
+mv vulpin ~/.local/bin
+```
+or you can do this instead of that:
+```
+sudo mv vulpin /usr/local/bin
+```
+
+<br>
+
+# 🍰 Vul – The Ultra‑Compact Programming Language
+
+**Vul** is a tiny, single‑character‑command scripting language that runs on top of Python.  
+It was designed to let you write the smallest possible programs while still having full programming power.
+
+```vul
+G"Hello World"
+```
+
+---
+
+## 📦 Quick Start
+
+1. **Download `vul.py`** – save it anywhere on your computer.
+2. **Create a `.vul` file** – for example `hello.vul`:
+
+   ```vul
+   G"Hello from Vul!"
+   ```
+
+3. **Run it**:
+   ```bash
+   python vul.py hello.vul
+   ```
+
+If you run `python vul.py` without a filename, it will try to execute `app.vul` in the current directory.
+
+---
+
+## 🔧 Installation (Global Command)
+
+### Windows
+Add the folder containing `vul.py` to your `PATH` environment variable, or rename `vul.py` to `vul` and use `python vul ...`.  
+For a native command, create a `vul.bat` file:
+```batch
+@echo off
+python "C:\path\to\vul.py" %*
+```
+
+### Linux / macOS
+Make `vul.py` executable and add it to your `PATH`:
+```bash
+mv vul.py vul
+chmod +x vul
+mkdir -p ~/bin
+mv vul ~/bin/
+echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc   # or ~/.zshrc
+source ~/.bashrc
+```
+Now you can use `vul` from any terminal:
+```bash
+vul myprogram.vul
+vul version
+```
+
+---
+
+## 📋 Complete Command Reference
+
+| Char | Name | Syntax | Description |
+|------|------|--------|-------------|
+| `G` | Print | `G expr` | Print with newline |
+| `P` | Print (no nl) | `P expr` | Print without newline |
+| `I` | Assign (old) | `I"var"=expr` | Old‑style assignment |
+| `=` | Assign | `var=expr` | Direct assignment (no command letter) |
+| `A` | Arithmetic assign | `A"var"op expr` | `var = var op expr` |
+| `S` | String replace | `S"var""old""new"` | Replace substring |
+| `D` | Delay / Delete | `D seconds` / `D"var"` | Wait or delete a variable |
+| `K` | Input | `K"var""prompt""type"` | Read from keyboard (with optional type) |
+| `X` | Execute file | `X"file.py"` | Run a Python file in the background |
+| `Q` | Quit | `Q` | Exit the program |
+| `E` | Error exit | `E"msg"` | Print error and exit |
+| `U` | Import | `U"module"` | Import a Python module or `.vul` file |
+| `?` | If / Cond jump | `? cond` / `? cond J label` | Conditional execution |
+| `:` | Else | `:` | Else clause |
+| `;` | Endif | `;` | End if block |
+| `@` | While | `@ cond` | Start while loop |
+| `&` | Wend / End for | `&` | End loop |
+| `O` | For‑range | `O var start end [step]` | Counted loop |
+| `L` | Label | `L name` | Define a jump label |
+| `J` | Jump | `J label` | Unconditional jump |
+| `F` | Function | `F name(params)` | Define a function |
+| `R` | Return | `R expr` | Return from function |
+| `~` | End function | `~` | End function body |
+| `T` | Try | `T` | Start try block |
+| `C` | Catch | `C` / `C"var"` | Catch exception |
+| `Y` | End try | `Y` | End try/catch |
+| `W` | Switch | `W expr` | Start switch block |
+| `V` | Case | `V value` | Case in switch |
+| `N` | Default | `N` | Default case |
+| `Z` | End switch | `Z` | End switch block |
+| `!` | Python exec | `! code` | Execute raw Python (multi‑line possible) |
+| `#` | Comment | `# text` | Inline comment |
+
+---
+
+## ✨ Basic Syntax
+
+### 🖨️ Output
+
+```vul
+G"Hello"           # Prints with newline
+P"Loading..."      # Prints without newline
+G 5 + 3            # Prints 8
+G $name            # Prints value of variable name
+```
+
+### 📥 Input
+
+```vul
+K"user""Your name: "
+G"Hi, " + $user
+
+# Typed input (invalid → default value)
+K"age""Age: ""I"        # Integer (default 0)
+K"price""Price: ""F"    # Float (default 0.0)
+K"letter""Guess: ""L"   # Single letter (default "")
+```
+
+**Type characters for `K`:**
+| Char | Type | Default if invalid |
+|------|------|--------------------|
+| `I` | Integer | `0` |
+| `F` | Float | `0.0` |
+| `N` | Number (int/float) | `0` |
+| `L` | Single letter | `""` |
+| `W` | Word (letters only) | `""` |
+| `E` | Lowercase only | `""` |
+| `U` | Uppercase only | `""` |
+| `A` | Letters + spaces | `""` |
+| `P` | Alphanumeric + spaces | `""` |
+
+### 📦 Variables
+
+```vul
+x=10               # Direct assignment
+name="Vul"
+I"y"=20            # Old-style assignment
+
+A"x"+5             # x = x + 5
+S"name""Vul""VUL"  # Replace in string
+D"y"               # Delete variable
+```
+
+**String shortcuts (on any string variable):**
+| Shortcut | Method | Example (`$msg.S`) |
+|----------|--------|-------------------|
+| `.U` | `upper()` | `"hello".U` → `"HELLO"` |
+| `.L` | `lower()` | `"HELLO".L` → `"hello"` |
+| `.S` | `strip()` | `" hi ".S` → `"hi"` |
+| `.T` | `title()` | `"hi there".T` → `"Hi There"` |
+| `.C` | `capitalize()` | `"hello".C` → `"Hello"` |
+
+### ⏱️ Delay
+
+```vul
+D1          # wait 1 second
+D0.5        # wait 0.5 seconds
+D $delay    # wait the value of variable
+```
+
+### 📚 Imports
+
+```vul
+U"os"
+G $os.getcwd()
+$os.system("echo Hello")
+
+U"math"
+G $math.sqrt(16)
+
+U"mylib.vul"    # execute another Vul file
+```
+
+---
+
+## 🔀 Control Flow
+
+### `?` / `:` / `;` – If / Else
+
+```vul
+score=85
+? $score >= 90
+    G"A"
+:
+? $score >= 80
+    G"B"
+:
+    G"C"
+;
+;
+```
+
+### `?` ... `J` – Conditional Jump
+
+```vul
+x=5
+? $x > 3 J skip
+G"Not printed"
+L skip
+G"Printed"
+```
+
+### `@` / `&` – While Loop
+
+```vul
+i=0
+@ $i < 5
+    G $i
+    i=$i+1
+&
+```
+
+### `@ 1` – Infinite Loop
+
+```vul
+@ 1
+    G"Running forever..."
+&
+```
+
+### `O` / `&` – For‑Range Loop
+
+```vul
+O i 0 5            # 0,1,2,3,4
+    G $i
+&
+
+O x 10 0 -2        # 10,8,6,4,2
+    G $x
+&
+```
+
+### `W` / `V` / `N` / `Z` – Switch / Case
+
+```vul
+fruit="apple"
+W $fruit
+V"banana"   G"yellow"
+V"apple"    G"red or green"
+N           G"unknown"
+Z
+```
+
+### `L` / `J` – Labels & Jumps
+
+```vul
+J end
+G"Skipped"
+L end
+G"Done"
+```
+
+---
+
+## 🔧 Functions
+
+```vul
+F add(a, b)
+    R $a + $b
+~
+
+G $add(3, 4)       # 7
+
+F greet(name)
+    G"Hello " + $name
+~
+
+$greet("World")
+```
+
+---
+
+## 🛡️ Error Handling
+
+```vul
+T
+    x=10
+    y=0
+    G $x/$y        # division by zero!
+C"err"
+    G"Error: " + $err
+Y
+G"Continues..."
+```
+
+Output:
+```
+Error: division by zero
+Continues...
+```
+
+---
+
+## 🐍 Inline Python (`!`)
+
+### Single line
+
+```vul
+!print("Hello from Python")
+!x = 42
+G $x
+```
+
+### Multi‑line (every line starts with `!`)
+
+```vul
+!class Dog:
+!    def __init__(self, name):
+!        self.name = name
+!    def speak(self):
+!        return "Woof!"
+
+!d = Dog("Buddy")
+G $d.name
+G $d.speak()
+```
+
+---
+
+## 🧪 Complete Examples
+
+### Hello World
+
+```vul
+G"Hello World"
+```
+
+### Calculator
+
+```vul
+K"a""First: ""N"
+K"op""Op (+,-,*,/): ""W"
+K"b""Second: ""N"
+? $op="+" G $a+$b
+:? $op="-" G $a-$b
+:? $op="*" G $a*$b
+:? $op="/" G $a/$b
+;
+;
+;
+;
+```
+
+### Guessing Game
+
+```vul
+U"random"
+secret=$random.randint(1,10)
+tries=0
+L guess
+K"num""Guess (1-10): ""I"
+tries=$tries+1
+? $num=$secret
+    G"Correct! Tries: "+$tries
+    Q
+:? $num<$secret G"Higher"
+: G"Lower"
+;
+;
+J guess
+```
+
+### Factorial
+
+```vul
+F factorial(n)
+    ? $n<=1
+        R 1
+    ;
+    R $n*$factorial($n-1)
+~
+
+G $factorial(5)   # 120
+```
+
+---
+
+## 🚦 Version
+
+To check the version of Vul you are running:
+
+```bash
+python vul.py version
+```
+
+Output:
+```
+Vul 1.0.0
+```
+
+---
+
+## 📝 Notes
+
+- **Spaces** are optional after commands. `G"Hi"` and `G "Hi"` both work.
+- **All commands are case‑sensitive** – only uppercase for the command letters (except `!`, `=`, `#`).
+- **The dot operator** (like `$os.name`) works correctly in the latest release. If you encounter issues, use the `--debug` flag to see detailed parser output.
+- **Direct assignment** (`var=expr`) is the preferred modern syntax. The old `I"var"=expr` still works.
+
+---
+
+## 📄 License
+MIT LIECENCE.
+CHECK OUT LIECENCE.
+---
+
+**Happy coding with Vul/in! /in yup! All things are built /in with vulp-in :) haha🚀**
