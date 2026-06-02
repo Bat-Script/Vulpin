@@ -1,6 +1,4 @@
 # Vulpin
-<img width="318" height="261" alt="vul1" src="https://github.com/user-attachments/assets/ef49a031-2a28-48b4-8a15-e90ddc45ff7c" />
-
 **Vul** is a tiny, single character command scripting language that runs on top of Python :)🦊 !  
 It was designed to let you write the smallest possible programs while still having full programming power!💪
 
