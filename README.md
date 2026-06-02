@@ -8,7 +8,7 @@ It was designed to let you write the smallest possible programs while still havi
 
 * <mark>1.</mark> Download Vulpin from **github**.
 
-* <mark>2.</mark> Download Python **(Portable version)**.
+* <mark>2.</mark> Download Python **(You can use every Python versions but, Portable version recommended)**.
 
 * <mark>3.</mark> Then add *python* in Vulpin Folder.
 
