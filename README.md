@@ -1,6 +1,7 @@
 # Vulpin
-Vulpin is high-level programming language which is wroten with **Python**.
-Vulpin focused on *App* Size, and most of thing's like Speed, modules, support's python modules.
+
+**Vul** is a tiny, single character command scripting language that runs on top of Python :)🦊 !  
+It was designed to let you write the smallest possible programs while still having full programming power!💪
 
 # Installition
 
@@ -43,64 +44,32 @@ sudo mv vulpin /usr/local/bin
 
 <br>
 
-# 🍰 Vul – The Ultra‑Compact Programming Language
-
-**Vul** is a tiny, single‑character‑command scripting language that runs on top of Python.  
-It was designed to let you write the smallest possible programs while still having full programming power.
-
 ```vul
 G"Hello World"
 ```
 
 ---
 
-## 📦 Quick Start
-
-1. **Download `vul.py`** – save it anywhere on your computer.
-2. **Create a `.vul` file** – for example `hello.vul`:
+## 🦊 Quick Start
+1. **Create a `.vul` file** – for example `hello.vul`:
 
    ```vul
-   G"Hello from Vul!"
+   G "Hello from Vul!"
    ```
 
-3. **Run it**:
+2. **Run it**:
    ```bash
    python vul.py hello.vul
    ```
 
-If you run `python vul.py` without a filename, it will try to execute `app.vul` in the current directory.
-
+If you run `python vul.py` without a filename, it will try to execute `app.vul` in the current directory!
+> [!TIP]
+> You can remove spaces in your app! dont worry about it! Because if you do that you can build your smalest program like this:
+>
+> ```G"Hello World"```
 ---
 
-## 🔧 Installation (Global Command)
-
-### Windows
-Add the folder containing `vul.py` to your `PATH` environment variable, or rename `vul.py` to `vul` and use `python vul ...`.  
-For a native command, create a `vul.bat` file:
-```batch
-@echo off
-python "C:\path\to\vul.py" %*
-```
-
-### Linux / macOS
-Make `vul.py` executable and add it to your `PATH`:
-```bash
-mv vul.py vul
-chmod +x vul
-mkdir -p ~/bin
-mv vul ~/bin/
-echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc   # or ~/.zshrc
-source ~/.bashrc
-```
-Now you can use `vul` from any terminal:
-```bash
-vul myprogram.vul
-vul version
-```
-
----
-
-## 📋 Complete Command Reference
+## 📋🦊 Complete Command Reference
 
 | Char | Name | Syntax | Description |
 |------|------|--------|-------------|
@@ -139,9 +108,9 @@ vul version
 
 ---
 
-## ✨ Basic Syntax
+## ✨🦊 Basic Syntax
 
-### 🖨️ Output
+### 🖨️🦊 Output
 
 ```vul
 G"Hello"           # Prints with newline
@@ -150,7 +119,7 @@ G 5 + 3            # Prints 8
 G $name            # Prints value of variable name
 ```
 
-### 📥 Input
+### 📥🦊 Input
 
 ```vul
 K"user""Your name: "
@@ -175,12 +144,11 @@ K"letter""Guess: ""L"   # Single letter (default "")
 | `A` | Letters + spaces | `""` |
 | `P` | Alphanumeric + spaces | `""` |
 
-### 📦 Variables
+### 📦🦊 Variables
 
 ```vul
 x=10               # Direct assignment
 name="Vul"
-I"y"=20            # Old-style assignment
 
 A"x"+5             # x = x + 5
 S"name""Vul""VUL"  # Replace in string
@@ -196,7 +164,7 @@ D"y"               # Delete variable
 | `.T` | `title()` | `"hi there".T` → `"Hi There"` |
 | `.C` | `capitalize()` | `"hello".C` → `"Hello"` |
 
-### ⏱️ Delay
+### ⏱️🦊 Delay
 
 ```vul
 D1          # wait 1 second
@@ -204,7 +172,7 @@ D0.5        # wait 0.5 seconds
 D $delay    # wait the value of variable
 ```
 
-### 📚 Imports
+### 📚🦊🎁📦 Imports
 
 ```vul
 U"os"
@@ -219,7 +187,7 @@ U"mylib.vul"    # execute another Vul file
 
 ---
 
-## 🔀 Control Flow
+## 🪻🎛️🦊 Control Flow
 
 ### `?` / `:` / `;` – If / Else
 
@@ -236,7 +204,7 @@ score=85
 ;
 ```
 
-### `?` ... `J` – Conditional Jump
+### `?` ... `J` – Conditional Jump🦊🦘
 
 ```vul
 x=5
@@ -246,7 +214,7 @@ L skip
 G"Printed"
 ```
 
-### `@` / `&` – While Loop
+### `@` / `&` – While Loop ➰🦊
 
 ```vul
 i=0
@@ -256,7 +224,7 @@ i=0
 &
 ```
 
-### `@ 1` – Infinite Loop
+### `@ 1` – Infinite Loop ➿🦊
 
 ```vul
 @ 1
@@ -264,7 +232,7 @@ i=0
 &
 ```
 
-### `O` / `&` – For‑Range Loop
+### `O` / `&` – For‑Range Loop 🏌️🦊
 
 ```vul
 O i 0 5            # 0,1,2,3,4
@@ -276,7 +244,7 @@ O x 10 0 -2        # 10,8,6,4,2
 &
 ```
 
-### `W` / `V` / `N` / `Z` – Switch / Case
+### `W` / `V` / `N` / `Z` – Switch / Case🛟🦊
 
 ```vul
 fruit="apple"
@@ -287,7 +255,7 @@ N           G"unknown"
 Z
 ```
 
-### `L` / `J` – Labels & Jumps
+### `L` / `J` – Labels & Jumps🦊
 
 ```vul
 J end
@@ -298,7 +266,7 @@ G"Done"
 
 ---
 
-## 🔧 Functions
+## 🔧 Functions Ummmmm FUN-CTIONS😂
 
 ```vul
 F add(a, b)
@@ -316,7 +284,7 @@ $greet("World")
 
 ---
 
-## 🛡️ Error Handling
+## 🥷 Error Handling
 
 ```vul
 T
@@ -337,7 +305,7 @@ Continues...
 
 ---
 
-## 🐍 Inline Python (`!`)
+## 🐍🦊 Inline Python (`!`)
 
 ### Single line
 
@@ -387,7 +355,7 @@ K"b""Second: ""N"
 ;
 ```
 
-### Guessing Game
+### Guessing Game (For practice)
 
 ```vul
 U"random"
@@ -421,7 +389,7 @@ G $factorial(5)   # 120
 
 ---
 
-## 🚦 Version
+## Command for check version 🦊
 
 To check the version of Vul you are running:
 
@@ -431,12 +399,12 @@ python vul.py version
 
 Output:
 ```
-Vul 1.0.0
+Vul 0.1
 ```
 
 ---
 
-## 📝 Notes
+## 📝 Some of the *notes* that I gonna say...
 
 - **Spaces** are optional after commands. `G"Hi"` and `G "Hi"` both work.
 - **All commands are case‑sensitive** – only uppercase for the command letters (except `!`, `=`, `#`).
