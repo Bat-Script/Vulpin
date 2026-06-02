@@ -1,6 +1,6 @@
 #TODO: READ LICENCE
 import re, sys, importlib, subprocess, time, os
-VERSION = "0.2"
+VERSION = "0.1"
 class VulError(Exception):
     def __init__(self, message, line=None, tip=None):
         self.message = message; self.line = line; self.tip = tip
