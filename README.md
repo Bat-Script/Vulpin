@@ -75,7 +75,6 @@ If you run `python vul.py` without a filename, it will try to execute `app.vul` 
 |------|------|--------|-------------|
 | `G` | Print | `G expr` | Print with newline |
 | `P` | Print (no nl) | `P expr` | Print without newline |
-| `I` | Assign (old) | `I"var"=expr` | Old‑style assignment |
 | `=` | Assign | `var=expr` | Direct assignment (no command letter) |
 | `A` | Arithmetic assign | `A"var"op expr` | `var = var op expr` |
 | `S` | String replace | `S"var""old""new"` | Replace substring |
