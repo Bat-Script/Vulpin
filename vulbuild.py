@@ -1,14 +1,4 @@
-#!/usr/bin/env python3
-"""
-Vul EXE Builder (standalone) – no external vul.py needed.
-Usage: python build_vul_exe.py myapp.vul --name "My Application"
-"""
-
 import sys, os, argparse, subprocess, base64
-
-# ============================================================
-#   EMBEDDED VUL INTERPRETER (the entire vul.py code)
-# ============================================================
 VUL_CODE = r'''
 import re, sys, importlib, subprocess, time, os
 VERSION = "1.0.4"
@@ -430,10 +420,6 @@ class VulInterpreter:
             try: mod = importlib.import_module(name); ctx.set_var(name, mod)
             except ImportError: raise VulError(f"Python module '{name}' not found", line=self.current_line, tip="Install it with pip.")
 '''
-
-# ============================================================
-#   BUILD LOGIC
-# ============================================================
 def main():
     parser = argparse.ArgumentParser(description="Build standalone Vul EXE")
     parser.add_argument("vul_file", help="The .vul file to compile")
@@ -442,17 +428,12 @@ def main():
     parser.add_argument("--console", action="store_true", default=True)
     parser.add_argument("--onefile", action="store_true", default=True)
     args = parser.parse_args()
-
     if not os.path.exists(args.vul_file):
         print(f"Error: {args.vul_file} not found")
         sys.exit(1)
-
-    # Read the Vul source
     with open(args.vul_file, 'r', encoding='utf-8') as f:
         source = f.read()
     encoded_source = base64.b64encode(source.encode('utf-8')).decode('ascii')
-
-    # Create the launcher script that embeds the interpreter and the source
     launcher = f'''
 import sys, os, tempfile, base64
 
@@ -472,11 +453,8 @@ try:
 finally:
     os.unlink(tmp_path)
 '''
-
     with open("_launcher.py", 'w', encoding='utf-8') as f:
         f.write(launcher)
-
-    # Run PyInstaller
     cmd = ["pyinstaller"]
     if args.onefile:
         cmd.append("--onefile")
@@ -485,23 +463,17 @@ finally:
     if not args.console:
         cmd.append("--windowed")
     cmd.extend(["--name", args.name, "_launcher.py"])
-
     print(f"Building '{args.name}.exe'...")
     result = subprocess.run(cmd, capture_output=True, text=True)
-
     if result.stdout:
         print(result.stdout)
     if result.stderr:
         print(result.stderr)
-
-    # Clean up
     if os.path.exists("_launcher.py"):
         os.remove("_launcher.py")
-
     if result.returncode == 0:
-        print(f"✅ '{args.name}.exe' created in dist/ folder")
+        print(f"🦊✅ '{args.name}.exe' created in dist/ folder")
     else:
-        print("❌ Build failed. Check errors above.")
-
+        print("🦊❌ Build failed. Check errors above.")
 if __name__ == "__main__":
     main()
