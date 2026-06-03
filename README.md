@@ -405,9 +405,8 @@ Vul 0.1
 ## 📝 Some of the *notes* that I gonna say...
 
 - **Spaces** are optional after commands. `G"Hi"` and `G "Hi"` both work.
-- **All commands are case‑sensitive** – only uppercase for the command letters (except `!`, `=`, `#`).
+- **All commands are case‑sensitive** – only uppercase for the command letters <mark>(except `!`, `=`, `#`</mark>).
 - **The dot operator** (like `$os.name`) works correctly in the latest release. If you encounter issues, use the `--debug` flag to see detailed parser output.
-- **Direct assignment** (`var=expr`) is the preferred modern syntax. The old `I"var"=expr` still works.
 
 ---
 
