@@ -400,6 +400,25 @@ Output:
 Vul 0.1
 ```
 
+# Build our app! 🦊👷🏻‍♂️🏗️
+
+* If you want to build your app, first you should install pyinstaller:
+
+```
+pip install pyinstaller
+```
+then all things are right!
+
+you can build your apps easily like this:
+
+```
+vulbuild app.vul --name "My Application"
+```
+
+* use this command to see all of the build commands
+```
+vulbuild -h
+```
 ---
 
 ## 📝 Some of the *notes* that I gonna say...
