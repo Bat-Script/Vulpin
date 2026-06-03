@@ -1,7 +1,7 @@
 import sys, os, argparse, subprocess, base64
 VUL_CODE = r'''
 import re, sys, importlib, subprocess, time, os
-VERSION = "1.0.4"
+VERSION = "0.2"
 class VulError(Exception):
     def __init__(self, message, line=None, tip=None):
         self.message = message; self.line = line; self.tip = tip
