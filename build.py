@@ -1,148 +1,154 @@
-#TODO: READ LICENCE
+#!/usr/bin/env python3
+"""
+Vul EXE Builder (standalone) – no external vul.py needed.
+Usage: python build_vul_exe.py myapp.vul --name "My Application"
+"""
+
+import sys, os, argparse, subprocess, base64
+
+# ============================================================
+#   EMBEDDED VUL INTERPRETER (the entire vul.py code)
+# ============================================================
+VUL_CODE = r'''
 import re, sys, importlib, subprocess, time, os
-VERSION = "0.2"
+VERSION = "1.0.4"
 class VulError(Exception):
-    def __init__(self,message,line=None, tip=None):
-        self.message=message;self.line=line;self.tip=tip
+    def __init__(self, message, line=None, tip=None):
+        self.message = message; self.line = line; self.tip = tip
     def __str__(self):
-        s=f"Vul Error (line {self.line}): {self.message}" if self.line else f"Vul Error: {self.message}"
-        if self.tip:s+=f"\nTip: {self.tip}"
+        s = f"Vul Error (line {self.line}): {self.message}" if self.line else f"Vul Error: {self.message}"
+        if self.tip: s += f"\nTip: {self.tip}"
         return s
-TOKEN_RE=re.compile(r'\d+\.\d+|\d+|\$[A-Za-z_]\w*|"[^"]*"|<=|>=|<>|\.|[+\-*/%()\[\],=<>]|[A-Za-z_]\w*')
-def tokenize(s,line_no):
-    tokens=[]
-    pos=0
+TOKEN_RE = re.compile(r'\d+\.\d+|\d+|\$[A-Za-z_]\w*|"[^"]*"|<=|>=|<>|\.|[+\-*/%()\[\],=<>]|[A-Za-z_]\w*')
+def tokenize(s, line_no):
+    tokens = []
+    pos = 0
     s = s.strip()
     while pos < len(s):
-        if s[pos] in ' \t':pos += 1;continue
-        m = TOKEN_RE.match(s,pos)
+        if s[pos] in ' \t': pos += 1; continue
+        m = TOKEN_RE.match(s, pos)
         if not m: raise VulError(f"Unexpected character '{s[pos]}' in '{s}'", line=line_no, tip="Check for invalid symbols, missing quotes, or unsupported Unicode.")
         tokens.append(m.group(0)); pos = m.end()
     return tokens
 class Context:
-    def __init__(self,parent=None):self.vars = {}; self.parent = parent;self.returned = False;self.return_val=None
-    def get_var(self,name):
+    def __init__(self, parent=None): self.vars = {}; self.parent = parent; self.returned = False; self.return_val = None
+    def get_var(self, name):
         if name in self.vars: return self.vars[name]
-        if self.parent:return self.parent.get_var(name)
+        if self.parent: return self.parent.get_var(name)
         raise NameError(f"Variable '{name}' not defined")
-    def set_var(self,name,value):self.vars[name]=value
-    def del_var(self,name):
+    def set_var(self, name, value): self.vars[name] = value
+    def del_var(self, name):
         if name in self.vars: del self.vars[name]
-        else: raise NameError(f"Variable'{name}' not defined")
+        else: raise NameError(f"Variable '{name}' not defined")
 class VulFunction:
-    def __init__(self,name,params,body_lines,interpreter):
-        self.name = name;self.params = params;self.body = body_lines;self.interpreter=interpreter
-    def __call__(self,*args):
-        if len(args)!=len(self.params):raise TypeError(f"Function '{self.name}' expects {len(self.params)} arguments, got {len(args)}")
+    def __init__(self, name, params, body_lines, interpreter):
+        self.name = name; self.params = params; self.body = body_lines; self.interpreter = interpreter
+    def __call__(self, *args):
+        if len(args) != len(self.params): raise TypeError(f"Function '{self.name}' expects {len(self.params)} arguments, got {len(args)}")
         local_ctx = Context(parent=self.interpreter.global_ctx)
-        for p,a in zip(self.params,args):local_ctx.set_var(p,a)
-        self.interpreter.run_block(self.body,local_ctx)
+        for p, a in zip(self.params, args): local_ctx.set_var(p, a)
+        self.interpreter.run_block(self.body, local_ctx)
         return local_ctx.return_val if local_ctx.returned else None
-STRING_SHORTCUTS={'U':'upper','L':'lower','S':'strip','T':'title','C':'capitalize'}
-DEBUG=False
+STRING_SHORTCUTS = {'U':'upper','L':'lower','S':'strip','T':'title','C':'capitalize'}
 class ExprEvaluator:
-    def __init__(self,context):self.ctx = context;self.line_no=0
-    def eval(self,expr_str):
-        if not expr_str.strip():return None
-        self.tokens=tokenize(expr_str,self.line_no)
-        if DEBUG:print(f"[DEBUG] Tokens for '{expr_str}': {self.tokens}", file=sys.stderr)
-        self.pos=0
+    def __init__(self, context): self.ctx = context; self.line_no = 0
+    def eval(self, expr_str):
+        if not expr_str.strip(): return None
+        self.tokens = tokenize(expr_str, self.line_no)
+        self.pos = 0
         return self.parse_comparison()
-    def peek(self):return self.tokens[self.pos] if self.pos<len(self.tokens)else None
-    def consume(self,expected=None):
-        tok=self.peek()
-        if tok is None:raise VulError("Unexpected end of expression",line=self.line_no,tip="The expression seems incomplete.")
-        if expected is not None and tok != expected:raise VulError(f"Expected '{expected}' but got '{tok}'",line=self.line_no,tip="Check syntax around this token.")
-        self.pos+=1;return tok
+    def peek(self): return self.tokens[self.pos] if self.pos < len(self.tokens) else None
+    def consume(self, expected=None):
+        tok = self.peek()
+        if tok is None: raise VulError("Unexpected end of expression", line=self.line_no, tip="The expression seems incomplete.")
+        if expected is not None and tok != expected: raise VulError(f"Expected '{expected}' but got '{tok}'", line=self.line_no, tip="Check syntax around this token.")
+        self.pos += 1; return tok
     def parse_comparison(self):
         left = self.parse_addition()
-        while (op := self.peek())in('=', '<', '>', '<=', '>=', '<>'):
-            self.consume();right=self.parse_addition()
-            if isinstance(left, str)or isinstance(right,str):
-                l,r = str(left),str(right)
-                left = 1 if((op=='='and l==r)or(op=='<'and l<r)or(op=='>'and l>r)or(op=='<='and l<=r)or(op=='>='and l>=r)or(op=='<>'and l!=r))else 0
+        while (op := self.peek()) in ('=', '<', '>', '<=', '>=', '<>'):
+            self.consume(); right = self.parse_addition()
+            if isinstance(left, str) or isinstance(right, str):
+                l, r = str(left), str(right)
+                left = 1 if ((op=='=' and l==r) or (op=='<' and l<r) or (op=='>' and l>r) or (op=='<=' and l<=r) or (op=='>=' and l>=r) or (op=='<>' and l!=r)) else 0
             else:
                 left = 1 if ((op=='=' and left==right) or (op=='<' and left<right) or (op=='>' and left>right) or (op=='<=' and left<=right) or (op=='>=' and left>=right) or (op=='<>' and left!=right)) else 0
         return left
     def parse_addition(self):
-        left=self.parse_multiplication()
-        while(op := self.peek()) in ('+', '-'):
-            self.consume();right=self.parse_multiplication()
-            if op == '+':left=str(left)+str(right)if isinstance(left, str)or isinstance(right,str)else left+right
+        left = self.parse_multiplication()
+        while (op := self.peek()) in ('+', '-'):
+            self.consume(); right = self.parse_multiplication()
+            if op == '+': left = str(left)+str(right) if isinstance(left, str) or isinstance(right, str) else left+right
             else:
-                if isinstance(left,str)or isinstance(right,str):raise TypeError("Cannot subtract strings")
-                left-=right
+                if isinstance(left, str) or isinstance(right, str): raise TypeError("Cannot subtract strings")
+                left -= right
         return left
     def parse_multiplication(self):
         left = self.parse_unary()
-        while (op := self.peek())in('*', '/', '%'):
-            self.consume(); right=self.parse_unary()
+        while (op := self.peek()) in ('*', '/', '%'):
+            self.consume(); right = self.parse_unary()
             if isinstance(left, str) or isinstance(right, str): raise TypeError(f"Operator '{op}' not supported for strings")
-            if op=='*':left *= right
-            elif op=='/':left/=right
-            else:left%=right
+            if op == '*': left *= right
+            elif op == '/': left /= right
+            else: left %= right
         return left
     def parse_unary(self):
-        if self.peek()=='-':
-            self.consume();val=self.parse_primary()
-            if isinstance(val,str):raise TypeError("Cannot negate a string")
+        if self.peek() == '-':
+            self.consume(); val = self.parse_primary()
+            if isinstance(val, str): raise TypeError("Cannot negate a string")
             return -val
         return self.parse_primary()
     def parse_primary(self):
         tok = self.peek()
-        if tok is None:raise VulError("Unexpected end of expression",line=self.line_no,tip="The expression is empty.")
-        if re.match(r'^\d',tok):
+        if tok is None: raise VulError("Unexpected end of expression", line=self.line_no, tip="The expression is empty.")
+        if re.match(r'^\d', tok):
             self.consume(); return float(tok) if '.' in tok else int(tok)
         elif tok.startswith('"'):
             self.consume(); return tok[1:-1]
         elif tok.startswith('$'):
-            self.consume(); var_name = tok[1:]; val = self.ctx.get_var(var_name)
-            if DEBUG: print(f"[DEBUG] ${var_name} = {val!r}", file=sys.stderr)
+            self.consume(); var_name = tok[1:]; return self.ctx.get_var(var_name)
         elif tok == '[': return self.parse_list()
         elif tok == '(':
             self.consume('('); val = self.parse_comparison()
             if self.peek() == ',':
                 self.consume(','); rest = self.parse_rest_tuple(); val = (val,) + rest
-            self.consume(')');return val
+            self.consume(')'); return val
         else:
-            raise VulError(f"Unexpected token '{tok}'",line=self.line_no, tip="You might have used an undefined variable. Put strings in quotes.")
+            raise VulError(f"Unexpected token '{tok}'", line=self.line_no, tip="You might have used an undefined variable. Put strings in quotes.")
         while True:
             t = self.peek()
             if t == '.':
-                self.consume('.');attr=self.consume()
-                if DEBUG: print(f"[DEBUG] Dot access: {type(val).__name__}.{attr}",file=sys.stderr)
-                if not attr.isidentifier():raise VulError(f"Invalid attribute name '{attr}'",line=self.line_no)
-                if attr in STRING_SHORTCUTS and isinstance(val,str):
-                    val=getattr(val,STRING_SHORTCUTS[attr])()
+                self.consume('.'); attr = self.consume()
+                if not attr.isidentifier(): raise VulError(f"Invalid attribute name '{attr}'", line=self.line_no)
+                if attr in STRING_SHORTCUTS and isinstance(val, str):
+                    val = getattr(val, STRING_SHORTCUTS[attr])()
                 else:
-                    val=getattr(val,attr)
-                if DEBUG:print(f"[DEBUG] After dot: {val!r}",file=sys.stderr)
-            elif t=='[':
-                self.consume('[');idx=self.parse_comparison();self.consume(']');val=val[idx]
-            elif t=='(':
-                self.consume('(');args=[]
-                if self.peek()!=')':
+                    val = getattr(val, attr)
+            elif t == '[':
+                self.consume('['); idx = self.parse_comparison(); self.consume(']'); val = val[idx]
+            elif t == '(':
+                self.consume('('); args = []
+                if self.peek() != ')':
                     args.append(self.parse_comparison())
-                    while self.peek()==',':self.consume(',');args.append(self.parse_comparison())
+                    while self.peek() == ',': self.consume(','); args.append(self.parse_comparison())
                 self.consume(')')
-                if not callable(val):raise TypeError(f"'{val}' is not callable")
-                val=val(*args)
-            else:break
+                if not callable(val): raise TypeError(f"'{val}' is not callable")
+                val = val(*args)
+            else: break
         return val
     def parse_list(self):
         self.consume('['); elems = []
-        if self.peek()!=']':
+        if self.peek() != ']':
             elems.append(self.parse_comparison())
-            while self.peek()==',':self.consume(',');elems.append(self.parse_comparison())
-        self.consume(']');return elems
+            while self.peek() == ',': self.consume(','); elems.append(self.parse_comparison())
+        self.consume(']'); return elems
     def parse_rest_tuple(self):
         rest = [self.parse_comparison()]
-        while self.peek()==',': self.consume(',');rest.append(self.parse_comparison())
+        while self.peek() == ',': self.consume(','); rest.append(self.parse_comparison())
         return tuple(rest)
 class VulInterpreter:
     def __init__(self):
         self.global_ctx = Context()
-        self.labels = {};self.try_blocks = {};self.switch_blocks = {};self.current_line=0
+        self.labels = {}; self.try_blocks = {}; self.switch_blocks = {}; self.current_line = 0
     def interpret(self, source):
         lines = source.splitlines(); program = []
         for raw in lines:
@@ -162,7 +168,7 @@ class VulInterpreter:
             elif re.match(r'^Y\s*$', line):
                 if not try_stack: raise VulError("Y without T", line=idx+1)
                 start_ip = try_stack.pop()
-                if start_ip in self.try_blocks:self.try_blocks[start_ip][1] = idx
+                if start_ip in self.try_blocks: self.try_blocks[start_ip][1] = idx
                 else: self.try_blocks[start_ip] = [None, idx]
             if line.startswith('W'): switch_stack.append(idx)
             elif line == 'Z':
@@ -175,34 +181,34 @@ class VulInterpreter:
             while i < end_ip:
                 line = program[i]
                 if line.startswith('V') or line.startswith('N'): case_ips.add(i)
-                elif line.startswith('W'):i=self.switch_blocks[i][0]
+                elif line.startswith('W'): i = self.switch_blocks[i][0]
                 i += 1
             self.switch_blocks[start_ip] = (end_ip, case_ips)
-        self.run_block(program,self.global_ctx)
-    def run_block(self,lines,ctx,start=0):
-        ip = start;control_stack = []; try_stack = []; in_switch = None
+        self.run_block(program, self.global_ctx)
+    def run_block(self, lines, ctx, start=0):
+        ip = start; control_stack = []; try_stack = []; in_switch = None
         evaluator = ExprEvaluator(ctx); python_block_lines = []
-        while ip<len(lines):
+        while ip < len(lines):
             line = lines[ip]; self.current_line = ip + 1; evaluator.line_no = self.current_line
             if line.startswith('!') and not python_block_lines:
-                code=line[1:]
-                if code.rstrip().endswith(':'): python_block_lines.append(code);ip+=1;continue
+                code = line[1:]
+                if code.rstrip().endswith(':'): python_block_lines.append(code); ip += 1; continue
                 else:
-                    try:exec(code, {'__builtins__': __builtins__},ctx.vars)
-                    except Exception as e: raise VulError(f"Python error: {e}",line=self.current_line)
+                    try: exec(code, {'__builtins__': __builtins__}, ctx.vars)
+                    except Exception as e: raise VulError(f"Python error: {e}", line=self.current_line)
                     ip += 1; continue
             if python_block_lines:
                 if line.startswith('!'): python_block_lines.append(line[1:]); ip += 1; continue
                 else:
                     full_code = '\n'.join(python_block_lines)
-                    try:exec(full_code, {'__builtins__': __builtins__}, ctx.vars)
+                    try: exec(full_code, {'__builtins__': __builtins__}, ctx.vars)
                     except Exception as e: raise VulError(f"Python error: {e}", line=self.current_line - len(python_block_lines))
                     python_block_lines = []; continue
             if in_switch is not None:
                 end_ip, delimiters = in_switch
                 if ip in delimiters: ip = end_ip + 1; in_switch = None; continue
             try:
-                m_assign=re.match(r'^([A-Za-z_]\w*)\s*=\s*(.+)$', line)
+                m_assign = re.match(r'^([A-Za-z_]\w*)\s*=\s*(.+)$', line)
                 if m_assign:
                     var_name = m_assign.group(1); expr_str = m_assign.group(2).strip()
                     val = evaluator.eval(expr_str); ctx.set_var(var_name, val); ip += 1; continue
@@ -284,6 +290,8 @@ class VulInterpreter:
                     mod = line[1:].strip()
                     if mod.startswith('"') and mod.endswith('"'): mod = mod[1:-1]
                     self.do_import(mod, ctx); ip += 1; continue
+                if line.startswith('I'):
+                    raise VulError(f"'I' command removed. Use var=expr instead.", line=self.current_line)
                 if line.startswith('A'):
                     m = re.match(r'A\s*"([^"]*)"\s*([+\-*/])\s*(.*)', line)
                     if not m: raise VulError(f"Invalid arithmetic: {line}", line=self.current_line, tip="A \"var\" + value")
@@ -381,7 +389,7 @@ class VulInterpreter:
                     if not matched: ip = end_ip + 1
                     continue
                 if line.startswith('O'):
-                    m_var=re.match(r'O\s*([A-Za-z_]\w*)\s+(.*)', line)
+                    m_var = re.match(r'O\s*([A-Za-z_]\w*)\s+(.*)', line)
                     if not m_var: raise VulError(f"Invalid for loop: {line}", line=self.current_line, tip="O var start end [step]")
                     var_name = m_var.group(1); rest = m_var.group(2).strip()
                     parts = rest.split()
@@ -421,21 +429,79 @@ class VulInterpreter:
         else:
             try: mod = importlib.import_module(name); ctx.set_var(name, mod)
             except ImportError: raise VulError(f"Python module '{name}' not found", line=self.current_line, tip="Install it with pip.")
-if __name__ == '__main__':
-    if '--debug' in sys.argv:
-        DEBUG = True
-        sys.argv.remove('--debug')
-    if len(sys.argv) > 1 and sys.argv[1] == '--selftest':
-        print("Self-test: importing os and printing os.name...")
-        vi = VulInterpreter()
-        vi.interpret('U"os"\nG $os.name\n')
-        sys.exit(0)
-    if len(sys.argv) > 1 and sys.argv[1].lower() == "version":
-        print(f"Vul {VERSION}"); sys.exit(0)
-    filename = sys.argv[1] if len(sys.argv) > 1 else 'app.vul'
-    try:
-        with open(filename, 'r') as f: source = f.read()
-        interpreter = VulInterpreter(); interpreter.interpret(source)
-    except FileNotFoundError: print(f"Error: '{filename}' not found.")
-    except VulError as e: print(e); sys.exit(1)
-    except Exception as e: print(f"Unexpected error: {e}"); sys.exit(1)
+'''
+
+# ============================================================
+#   BUILD LOGIC
+# ============================================================
+def main():
+    parser = argparse.ArgumentParser(description="Build standalone Vul EXE")
+    parser.add_argument("vul_file", help="The .vul file to compile")
+    parser.add_argument("--name", default="vul_app", help="Output EXE name")
+    parser.add_argument("--icon", help="Icon file (.ico)")
+    parser.add_argument("--console", action="store_true", default=True)
+    parser.add_argument("--onefile", action="store_true", default=True)
+    args = parser.parse_args()
+
+    if not os.path.exists(args.vul_file):
+        print(f"Error: {args.vul_file} not found")
+        sys.exit(1)
+
+    # Read the Vul source
+    with open(args.vul_file, 'r', encoding='utf-8') as f:
+        source = f.read()
+    encoded_source = base64.b64encode(source.encode('utf-8')).decode('ascii')
+
+    # Create the launcher script that embeds the interpreter and the source
+    launcher = f'''
+import sys, os, tempfile, base64
+
+# ---- Embedded Vul Interpreter ----
+{VUL_CODE}
+
+# ---- Decode and run the user's Vul program ----
+source = base64.b64decode("{encoded_source}").decode("utf-8")
+with tempfile.NamedTemporaryFile(mode='w', suffix='.vul', delete=False) as f:
+    f.write(source)
+    tmp_path = f.name
+try:
+    interpreter = VulInterpreter()
+    with open(tmp_path, 'r') as f:
+        code = f.read()
+    interpreter.interpret(code)
+finally:
+    os.unlink(tmp_path)
+'''
+
+    with open("_launcher.py", 'w', encoding='utf-8') as f:
+        f.write(launcher)
+
+    # Run PyInstaller
+    cmd = ["pyinstaller"]
+    if args.onefile:
+        cmd.append("--onefile")
+    if args.icon:
+        cmd.extend(["--icon", args.icon])
+    if not args.console:
+        cmd.append("--windowed")
+    cmd.extend(["--name", args.name, "_launcher.py"])
+
+    print(f"Building '{args.name}.exe'...")
+    result = subprocess.run(cmd, capture_output=True, text=True)
+
+    if result.stdout:
+        print(result.stdout)
+    if result.stderr:
+        print(result.stderr)
+
+    # Clean up
+    if os.path.exists("_launcher.py"):
+        os.remove("_launcher.py")
+
+    if result.returncode == 0:
+        print(f"✅ '{args.name}.exe' created in dist/ folder")
+    else:
+        print("❌ Build failed. Check errors above.")
+
+if __name__ == "__main__":
+    main()
