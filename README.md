@@ -392,7 +392,7 @@ G $factorial(5)   # 120
 To check the version of Vul you are running:
 
 ```bash
-python vul.py version
+vulpin version
 ```
 
 Output:
