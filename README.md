@@ -400,7 +400,7 @@ Output:
 Vul 0.1
 ```
 
-# Build our app! 🦊👷🏻‍♂️🏗️
+# Build your app! [BETA] 🦊👷🏻‍♂️🏗️
 
 * If you want to build your app, first you should install pyinstaller:
 
