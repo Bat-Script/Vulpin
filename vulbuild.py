@@ -23,7 +23,6 @@ def create_run_script(output_dir, target_format=None):
     script_path.write_text(f'''#!/usr/bin/env python3
 import subprocess, sys
 def main():
-    print("Running: {cmd}")
     r = subprocess.run("{cmd}", shell=True, cwd=r"{output_dir.resolve()}")
     sys.exit(r.returncode)
 if __name__ == "__main__":
