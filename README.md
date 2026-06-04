@@ -417,14 +417,14 @@ vulbuild --os all --cross
 ```
 * for build a ```specific OS``` only:
 ```
-python vulpin_builder.py --os linux --cross
+vulbuild --os linux --cross
 ```
 ```
-python vulpin_builder.py --os windows --cross
+vulbuild --os windows --cross
 ```
 * for ```package``` your project:
 ```
-python vulpin_builder.py --os all --cross --package zip tar.gz appimage dmg
+vulbuild --os all --cross --package zip tar.gz appimage dmg
 ```
 
 ---
