@@ -1,8 +1,8 @@
 import os, sys, shutil, subprocess, platform, zipfile, tarfile, stat
 from pathlib import Path
 
-def get_script_dir():
-    return Path(__file__).resolve().parent
+def get_script_path():
+    return Path(__file__).resolve()
 
 def copy_project(src, dst, script_path, output_name):
     dst.mkdir(parents=True, exist_ok=True)
@@ -23,6 +23,7 @@ def create_run_script(output_dir, target_format=None):
     script_path.write_text(f'''#!/usr/bin/env python3
 import subprocess, sys
 def main():
+    print("Running: {cmd}")
     r = subprocess.run("{cmd}", shell=True, cwd=r"{output_dir.resolve()}")
     sys.exit(r.returncode)
 if __name__ == "__main__":
@@ -114,9 +115,14 @@ def main():
     p.add_argument("--keep-py", action="store_true")
     args = p.parse_args()
 
-    script_dir = get_script_dir()
-    output_dir = script_dir / args.output
-    copy_project(script_dir, output_dir, Path(__file__), args.output)
+    cwd = Path.cwd()
+    output_dir = cwd / args.output
+    script_path = get_script_path()
+
+    # Copy everything from current directory into output_dir,
+    # skipping this script and the output folder itself.
+    copy_project(cwd, output_dir, script_path, args.output)
+
     run_py = create_run_script(output_dir, args.target)
 
     target_os = args.target_os
