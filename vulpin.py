@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 #TODO: READ LICENCE
 import re, sys, importlib, subprocess, time, os
 VERSION = "0.2"
