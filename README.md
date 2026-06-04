@@ -22,11 +22,7 @@ rundll32 sysdm.cpl,EditEnvironmentVariables
 then go to path in the system variable box. after that add vulpin from dictionary.
 
 # linux
-add this code in at the first line of ```vulpin.py```:
-```python
-#!/usr/bin/env python3
-```
-Then make it excetuble:
+make it excetuble:
 ```
 mv vulpin.py vulpinchmod +x vulpin
 ```
@@ -409,16 +405,28 @@ pip install pyinstaller
 ```
 then all things are right!
 
-you can build your apps easily like this:
+### you can build your apps easily like this:
 
+* for build your app as ```default```:
 ```
-vulbuild app.vul --name "My Application"
+vulbuild
+```
+* for build for ```linux```, ```macos```,```windows```:
+```
+vulbuild --os all --cross
+```
+* for build a ```specific OS``` only:
+```
+python vulpin_builder.py --os linux --cross
+```
+```
+python vulpin_builder.py --os windows --cross
+```
+* for ```package``` your project:
+```
+python vulpin_builder.py --os all --cross --package zip tar.gz appimage dmg
 ```
 
-* use this command to see all of the build commands
-```
-vulbuild -h
-```
 ---
 
 ## 📝 Some of the *notes* that I gonna say...
