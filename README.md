@@ -1,11 +1,11 @@
 # Vulpin
 **Vul** is a tiny, single character command scripting language that runs on top of Python :)🦊 !  
-It was designed to let you write the smallest possible programs while still having full programming power!💪
+It was designed to let you write the smallest possible programs while still having full programming power! ;)
 
 # Installition
 
 
-* <mark>1.</mark> Download Vulpin from **github**.
+* <mark>1.</mark> Download Vulpin from **github** or using the gitclone and some of the stuff...
 
 * <mark>2.</mark> Download Python **(You can use every Python versions but, Portable version recommended)**.
 
@@ -403,6 +403,7 @@ Vul 0.1
 ```
 pip install pyinstaller
 ```
+
 then all things are right!
 
 ### you can build your apps easily like this:
@@ -439,7 +440,7 @@ vulbuild --os all --cross --package zip tar.gz appimage dmg
 
 ## 📄 License
 MIT LIECENCE.
-CHECK OUT LIECENCE.
+CHECK OUT LIECENCE. ELSE I *** U :X
 ---
 
-**Happy coding with Vul/in! /in yup! All things are built /in with vulp-in :) haha🚀**
+**Happy coding with Vul/in! /in yup! All things are built /in with vulp-in :) haha**
