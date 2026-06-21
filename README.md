@@ -260,7 +260,7 @@ G"Done"
 
 ---
 
-## 🔧 Functions Ummmmm FUN-CTIONS😂
+## 🔧 Functions
 
 ```vul
 F add(a, b)
@@ -429,7 +429,15 @@ vulbuild --os all --cross --package zip tar.gz appimage dmg
 ```
 
 ---
+# TroubleShooting💫
 
+Let's fix your problems!
+
+- Python Type Hint Syntax Error:
+  this is known error in new Vulpin version like you can see it at most in version ```0.5``` but thats easy to fix!
+  - on ***vulpin 0.5*** this error might be in line of ```682``` or line of ```77``` or etc...!
+    take a look at here to see how to fix: https://github.com/orgs/community/discussions/199748
+---
 ## 📝 Some of the *notes* that I gonna say...
 
 - **Spaces** are optional after commands. `G"Hi"` and `G "Hi"` both work.
