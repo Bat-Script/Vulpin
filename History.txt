@@ -1,14 +1,5 @@
 A. HISTORY OF THE SOFTWARE
 ==========================
+Vulpin was created in the early of April 2026 by Armin Ghassemi(BatScript) at the Parents house when he was drinking coffee :)
 
-===========VULPIN===========
-
-Vulpin was created in the early of April 2026 by Armin Ghassemi at the Parents house when he was drinking coffee :)
-IDK I made this programming language but my parents didn't cheer-up me :(( sounds like they want that I make a Rocket, BTW.
-and yea... everyone was telling to me that YOU DONT KNOW ABOUT HOW TO PROGRAMMING :| but I made this programming language with the Broke Heart :(
-
-I want you that DO NOT COPY my code please... because my heart breaks so much :(
-
-COPYRIGHT BY ARMIN GHASSEMI ALL RIGHT REVERSED...happy open source!! I hope that I can join to the biggest companies to just show off to my parents :) !
-
-I love you Guido van Rossum I hope that you can read my message!
+Check out LICENCE please.
