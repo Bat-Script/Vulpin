@@ -2,56 +2,23 @@
 **Vul** is a tiny, single character command scripting language that runs on top of Python :)🦊 !  
 It was designed to let you write the smallest possible programs while still having full programming power! ;)
 
-# Installition
+# 📦 Installition
 
 
-* <mark>1.</mark> Download Vulpin from **github** or using the gitclone and some of the stuff...
+* Download Vulpin from **github** or using the gitclone and some of the stuff...
 
-* <mark>2.</mark> Download Python **(You can use every Python versions but, Portable version recommended)**.
+* Download **Python 3**.
 
-* <mark>3.</mark> If you downloaded **Python Portable** version, add *python* folder to Vulpin Folder.
-
-* <mark>4.</mark>  Then sync Vulpin in system variables.
-
-# Windows
-To do that, you have to open system variables:
-* Click ```Win+R``` on your system then write and enter:
-```
-rundll32 sysdm.cpl,EditEnvironmentVariables
-```
-then go to path in the system variable box. after that add vulpin from dictionary.
-
-# linux
-make it excetuble:
-```
-mv vulpin.py vulpinchmod +x vulpin
-```
-
-then move it to path like this:
-```
-mkdir -p ~/.local/bin/
-mv vulpin ~/.local/bin
-```
-or you can do this instead of that:
-```
-sudo mv vulpin /usr/local/bin
-```
+* Then **Sync** Vulpin in *system variables*. **Sync it with folder of ```Bin```**
 
 <br>
-
-```vul
-G"Hello World"
-```
-
 ---
 
-## 🦊 Quick Start
-1. **Create a `.vul` file** – for example `hello.vul`:
-
+## 🌠 Quick Start
+1. **Create a `.vul` file**. Like `hello.vul`:
    ```vul
    G "Hello from Vul!"
    ```
-
 2. **Run it**:
    ```bash
    python vul.py hello.vul
