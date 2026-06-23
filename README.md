@@ -12,7 +12,6 @@ It was designed to let you write the smallest possible programs while still havi
 * Then **Sync** Vulpin in *system variables*. **Sync it with folder of ```Bin```**
 
 <br>
----
 
 ## 🌠 Quick Start
 1. **Create a `.vul` file**. Like `hello.vul`:
