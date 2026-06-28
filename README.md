@@ -30,7 +30,7 @@ If you run `python vul.py` without a filename, it will try to execute `app.vul` 
 > ```G"Hello World"```
 ---
 
-## 📋🦊 Complete Command Reference
+## 📋🦊 Command Reference
 
 | Char | Name | Syntax | Description |
 |------|------|--------|-------------|
@@ -65,6 +65,8 @@ If you run `python vul.py` without a filename, it will try to execute `app.vul` 
 | `Z` | End switch | `Z` | End switch block |
 | `!` | Python exec | `! code` | Execute raw Python (multi‑line possible) |
 | `#` | Comment | `# text` | Inline comment |
+
+*Bruh :/ This doesnt looks like command reference of asm :/ if you think, damn learn ASM ;-;*
 
 ---
 
@@ -115,7 +117,7 @@ S"name""Vul""VUL"  # Replace in string
 D"y"               # Delete variable
 ```
 
-**String shortcuts (on any string variable):**
+**String shortcuts:**
 | Shortcut | Method | Example (`$msg.S`) |
 |----------|--------|-------------------|
 | `.U` | `upper()` | `"hello".U` → `"HELLO"` |
@@ -257,7 +259,7 @@ Y
 G"Continues..."
 ```
 
-Output:
+📤Output:
 ```
 Error: division by zero
 Continues...
@@ -293,13 +295,13 @@ G $d.speak()
 
 ## 🧪 Complete Examples
 
-### Hello World
+### 👋 Hello World
 
 ```vul
 G"Hello World"
 ```
 
-### Calculator
+### 🧮 Calculator
 
 ```vul
 K"a""First: ""N"
@@ -315,7 +317,7 @@ K"b""Second: ""N"
 ;
 ```
 
-### Guessing Game (For practice)
+### 🤔 Guessing Game (For practice)
 
 ```vul
 U"random"
@@ -334,7 +336,7 @@ tries=$tries+1
 J guess
 ```
 
-### Factorial
+### 🏭 Factorial
 
 ```vul
 F factorial(n)
@@ -362,11 +364,11 @@ Output:
 Vul 0.1
 ```
 
-# Build your app! [BETA] 🦊👷🏻‍♂️🏗️
+# Build your app! (Beta) 🦊🏗️
 
 * If you want to build your app, first you should install pyinstaller:
 
-```
+```bash
 pip install pyinstaller
 ```
 
