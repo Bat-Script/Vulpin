@@ -421,7 +421,7 @@ CHECK OUT LICENCE. :D
 
 **Happy coding with Vulpin!**
 
-*Actually vulpin word comes from Vulpes and Vulpes are so cute and i was take a look at a vulpes and I saw that they have rainbow eyes and light eyes but they was escaping from me :(*
+*Actually vulpin word comes from Vulpes and Vulpes are so cute and i was take a look at vulpes and I saw that they have rainbow eyes and light eyes but they was escaping from me :(*
 
 ***
 We all learn from animals and nature :D . We should support all animals. The fox is not extinct, but why not? If we don't pay attention, it will become extinct too. :(
