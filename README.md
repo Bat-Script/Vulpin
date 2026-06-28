@@ -414,7 +414,7 @@ Let's fix your problems!
 
 ## 📄 License
 MIT LIECENCE.
-CHECK OUT LIECENCE. ELSE I *** U :X
+CHECK OUT LIECENCE. :D
 ---
 
 **Happy coding with Vul/in! /in yup! All things are built /in with vulp-in :) haha**
