@@ -417,4 +417,10 @@ MIT LIECENCE.
 CHECK OUT LIECENCE. :D
 ---
 
-**Happy coding with Vul/in! /in yup! All things are built /in with vulp-in :) haha**
+**Happy coding with Vulpin!**
+
+*Actually vulpin word comes from Vulpes and Vulpes are so cute and i was take a look at a vulpes and I saw that they have rainbow eyes and light eyes but they was escaping from me :(*
+
+***
+We all learn from animals and nature :D . We should support all animals. The fox is not extinct, but why not? If we don't pay attention, it will become extinct too. :(
+***
