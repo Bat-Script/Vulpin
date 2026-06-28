@@ -1,11 +1,11 @@
 # Vulpin
-**Vul** is a tiny, single character command scripting language that runs on top of Python :)🦊 !  
-It was designed to let you write the smallest possible programs while still having full programming power! ;)
+**Vulpin** is a tiny, *single character command scripting language* that runs on top of **Python** :)🦊!  
+It was designed to let you ***write the smallest possible programs*** while still having full programming power! ;)
 
 # 📦 Installition
 
 
-* Download Vulpin from **github** or using the gitclone and some of the stuff...
+* Download ***Vulpin*** from **github** or using the gitclone and some of the stuff...
 
 * Download **Python 3**.
 
@@ -66,7 +66,7 @@ If you run `python vul.py` without a filename, it will try to execute `app.vul` 
 | `!` | Python exec | `! code` | Execute raw Python (multi‑line possible) |
 | `#` | Comment | `# text` | Inline comment |
 
-*Bruh :/ This doesnt looks like command reference of asm :/ if you think, damn learn ASM ;-;*
+*Bruh :/ This doesnt look's like command reference of ASM :/ if you think, damn! learn ASM ;-;*
 
 ---
 
@@ -391,7 +391,7 @@ vulbuild --os linux --cross
 ```
 vulbuild --os windows --cross
 ```
-* for ```package``` your project:
+* for ```package``` your Project:
 ```
 vulbuild --os all --cross --package zip tar.gz appimage dmg
 ```
@@ -399,7 +399,7 @@ vulbuild --os all --cross --package zip tar.gz appimage dmg
 ---
 # TroubleShooting💫
 
-Let's fix your problems!
+Let's fix your **problem's**!
 
 - Python Type Hint Syntax Error:
   this is known error in new Vulpin version like you can see it at most in version ```0.5``` but thats easy to fix!
@@ -415,8 +415,8 @@ Let's fix your problems!
 ---
 
 ## 📄 License
-MIT LIECENCE.
-CHECK OUT LIECENCE. :D
+MIT LICENCE.
+CHECK OUT LICENCE. :D
 ---
 
 **Happy coding with Vulpin!**
